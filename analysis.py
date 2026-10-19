@@ -67,7 +67,9 @@ def bp_raw(ts: pd.DataFrame) -> pd.DataFrame:
     前行から変化した行を「測定点」とみなす(先頭行は治療前値)。
     ※同一値が連続して測定された場合は検出できない。
     """
-    raw = ts[["sbp", "dbp", "pulse"]].to_numpy(float)
+    # pandas 3.x may return a read-only view. Clean an independent array so
+    # invalid-value handling also leaves the source time series unchanged.
+    raw = ts[["sbp", "dbp", "pulse"]].to_numpy(dtype=float, copy=True)
     raw[raw <= 0] = np.nan  # 未測定(-1)は無効
     arr = pd.DataFrame(raw).ffill().to_numpy()  # 無効行は直前の測定値を保持して変化を判定
     ok = ~np.isnan(arr).any(axis=1) & ~np.isnan(raw).any(axis=1)

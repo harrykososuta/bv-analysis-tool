@@ -29,6 +29,8 @@ jobs:
         run: setup.bat --no-pause
       - name: Check Python syntax
         run: .venv/Scripts/python.exe -m compileall -q app.py analysis.py bv_parser.py bv_settings.py db.py stats_models.py ufc.py
+      - name: Check blood pressure analysis
+        run: .venv/Scripts/python.exe -m unittest discover -s tests -v
       - name: Check startup with an empty data folder
         shell: pwsh
         run: |
