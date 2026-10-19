@@ -1,0 +1,40 @@
+name: Check local installation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    env:
+      BV_DATA_DIR: ${{ runner.temp }}/bv-tool-check-data
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Create environment for the selected Python version
+        run: python -m venv .venv
+      - name: Run first-time setup
+        shell: cmd
+        run: setup.bat --no-pause
+      - name: Check Python syntax
+        run: .venv/Scripts/python.exe -m compileall -q app.py analysis.py bv_parser.py bv_settings.py db.py stats_models.py ufc.py
+      - name: Check startup with an empty data folder
+        shell: pwsh
+        run: |
+          @'
+          from streamlit.testing.v1 import AppTest
+
+          app = AppTest.from_file("app.py").run(timeout=60)
+          assert not app.exception, [error.message for error in app.exception]
+          '@ | .venv/Scripts/python.exe -

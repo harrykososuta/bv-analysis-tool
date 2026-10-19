@@ -1,0 +1,43 @@
+# Local environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Patient data, exports, settings and backups (also for custom save locations)
+data/
+BV_Tool_Data/
+patients/
+backup/
+backups/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.csv
+*.tsv
+*.xls
+*.xlsx
+*.zip
+*.bak
+settings.json
+
+# Credentials and machine-specific files
+.env
+.env.*
+.streamlit/secrets.toml
+.streamlit/credentials.toml
+*.pem
+*.key
+.aws/
+.codex/
+.agents/
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+*.log
